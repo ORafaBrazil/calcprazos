@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Prazos Processuais - TJGO</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <img src="logo_tjgo.png" alt="Logo TJGO" class="logo">
+        <h1>Calculadora de Prazos Processuais - TJGO</h1>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="tabs">
+                <button class="tab-button active" data-tab="purgação">1. Purgação da Mora</button>
+                <button class="tab-button" data-tab="contestação">2. Contestação</button>
+                <button class="tab-button" data-tab="sucessivos">3. Prazos Sucessivos</button>
+                <button class="tab-button" data-tab="trânsito">4. Trânsito em Julgado</button>
+                <button class="tab-button" data-tab="contagem">5. Contagem Livre</button>
+                <button class="tab-button" data-tab="suspensão">6. Suspensão</button>
+                <button class="tab-button" data-tab="feriados">7. Gerenciar Feriados</button>
+            </div>
+
+            <!-- Purgação da Mora -->
+            <div class="tab-content active" id="purgação">
+                <h2>Purgação da Mora</h2>
+                <p>5 dias úteis a contar da juntada do mandado cumprido pelo oficial de justiça.</p>
+                <div class="form-group">
+                    <label for="purgação-data">Data da juntada do mandado cumprido:</label>
+                    <input type="date" id="purgação-data" required>
+                </div>
+                <button onclick="calcularPurgação()" class="btn-calculate">Calcular</button>
+                <div id="purgação-resultado" class="resultado"></div>
+            </div>
+
+            <!-- Contestação -->
+            <div class="tab-content" id="contestação">
+                <h2>Contestação</h2>
+                <p>15 dias úteis após o prazo da purgação da mora, contado sucessivamente.</p>
+                <div class="form-group">
+                    <label for="contestação-data">Data da juntada do mandado cumprido (purgação):</label>
+                    <input type="date" id="contestação-data" required>
+                </div>
+                <button onclick="calcularContestação()" class="btn-calculate">Calcular</button>
+                <div id="contestação-resultado" class="resultado"></div>
+            </div>
+
+            <!-- Prazos Sucessivos -->
+            <div class="tab-content" id="sucessivos">
+                <h2>Prazos Sucessivos</h2>
+                <p>Calcule o primeiro prazo mais o segundo prazo em dias úteis (sucessivos).</p>
+                <div class="form-group">
+                    <label for="sucessivos-data">Data de entrada (Prazo 1):</label>
+                    <input type="date" id="sucessivos-data" required>
+                </div>
+                <div class="form-group">
+                    <label for="sucessivos-prazo1">Prazo 1 (em dias):</label>
+                    <input type="number" id="sucessivos-prazo1" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="sucessivos-prazo2">Prazo 2 (em dias):</label>
+                    <input type="number" id="sucessivos-prazo2" min="1" required>
+                </div>
+                <button onclick="calcularSucessivos()" class="btn-calculate">Calcular</button>
+                <div id="sucessivos-resultado" class="resultado"></div>
+            </div>
+
+            <!-- Trânsito em Julgado -->
+            <div class="tab-content" id="trânsito">
+                <h2>Trânsito em Julgado</h2>
+                <p>15 dias úteis. A contagem inicia 2 dias após a data informada.</p>
+                <div class="form-group">
+                    <label for="trânsito-data">Data da movimentação no Projudi:</label>
+                    <input type="date" id="trânsito-data" required>
+                </div>
+                <button onclick="calcularTrânsito()" class="btn-calculate">Calcular</button>
+                <div id="trânsito-resultado" class="resultado"></div>
+            </div>
+
+            <!-- Contagem Livre -->
+            <div class="tab-content" id="contagem">
+                <h2>Contagem Livre (X dias - da publicação)</h2>
+                <p>Contagem inicia: 1 dia para disponibilização + 1 dia para publicação + 1 dia subsequente.</p>
+                <div class="form-group">
+                    <label for="contagem-data">Data registrada no Projudi:</label>
+                    <input type="date" id="contagem-data" required>
+                </div>
+                <div class="form-group">
+                    <label for="contagem-dias">Número de dias:</label>
+                    <input type="number" id="contagem-dias" min="1" required>
+                </div>
+                <button onclick="calcularContagem()" class="btn-calculate">Calcular</button>
+                <div id="contagem-resultado" class="resultado"></div>
+            </div>
+
+            <!-- Suspensão -->
+            <div class="tab-content" id="suspensão">
+                <h2>Suspensão</h2>
+                <p>Calcule os dias úteis em contagem direta (pular dias).</p>
+                <div class="form-group">
+                    <label for="suspensão-data">Data inicial:</label>
+                    <input type="date" id="suspensão-data" required>
+                </div>
+                <div class="form-group">
+                    <label for="suspensão-dias">Quantos dias suspender:</label>
+                    <input type="number" id="suspensão-dias" min="1" required>
+                </div>
+                <button onclick="calcularSuspensão()" class="btn-calculate">Calcular</button>
+                <div id="suspensão-resultado" class="resultado"></div>
+            </div>
+
+            <!-- Gerenciar Feriados -->
+            <div class="tab-content" id="feriados">
+                <h2>Gerenciar Feriados e Pontos Facultativos</h2>
+                <div class="feriados-container">
+                    <div class="form-group">
+                        <label for="novo-feriado">Adicionar feriado ou ponto facultativo:</label>
+                        <input type="date" id="novo-feriado">
+                        <button onclick="adicionarFeriado()" class="btn-add">Adicionar</button>
+                    </div>
+                    <div class="feriados-list">
+                        <h3>Feriados e Pontos Facultativos Cadastrados:</h3>
+                        <div id="lista-feriados"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Versão teste. Desenvolvido por Rafael Tuma.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+

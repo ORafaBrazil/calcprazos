@@ -1,0 +1,255 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    background: white;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.logo {
+    max-height: 80px;
+    margin-bottom: 10px;
+}
+
+header h1 {
+    color: #333;
+    font-size: 1.8em;
+    margin-top: 10px;
+}
+
+main {
+    flex: 1;
+    padding: 30px 20px;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    overflow: hidden;
+}
+
+.tabs {
+    display: flex;
+    flex-wrap: wrap;
+    background: #f5f5f5;
+    border-bottom: 2px solid #ddd;
+}
+
+.tab-button {
+    flex: 1;
+    min-width: 120px;
+    padding: 15px 10px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 600;
+    color: #666;
+    transition: all 0.3s;
+    border-bottom: 3px solid transparent;
+}
+
+.tab-button:hover {
+    background: #e0e0e0;
+    color: #333;
+}
+
+.tab-button.active {
+    background: white;
+    color: #667eea;
+    border-bottom-color: #667eea;
+}
+
+.tab-content {
+    display: none;
+    padding: 30px;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.tab-content h2 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+}
+
+.tab-content p {
+    color: #666;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 600;
+}
+
+.form-group input[type="date"],
+.form-group input[type="number"] {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+    transition: border-color 0.3s;
+}
+
+.form-group input[type="date"]:focus,
+.form-group input[type="number"]:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.btn-calculate,
+.btn-add {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 10px;
+}
+
+.btn-calculate:hover,
+.btn-add:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-add {
+    margin-left: 10px;
+    padding: 12px 20px;
+}
+
+.resultado {
+    margin-top: 25px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-left: 4px solid #667eea;
+    border-radius: 5px;
+    display: none;
+}
+
+.resultado.show {
+    display: block;
+}
+
+.resultado h3 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.resultado p {
+    color: #666;
+    margin: 5px 0;
+    font-size: 1.1em;
+}
+
+.resultado .data-final {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #667eea;
+    margin-top: 10px;
+}
+
+.feriados-container {
+    margin-top: 20px;
+}
+
+.feriados-list {
+    margin-top: 30px;
+}
+
+.feriados-list h3 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.feriado-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.feriado-item span {
+    color: #333;
+    font-weight: 500;
+}
+
+.btn-remove {
+    background: #dc3545;
+    color: white;
+    padding: 6px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background 0.3s;
+}
+
+.btn-remove:hover {
+    background: #c82333;
+}
+
+footer {
+    background: white;
+    padding: 15px;
+    text-align: center;
+    color: #666;
+    font-size: 0.85em;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 768px) {
+    .tabs {
+        flex-direction: column;
+    }
+    
+    .tab-button {
+        width: 100%;
+        border-bottom: 1px solid #ddd;
+        border-right: none;
+    }
+    
+    .tab-button.active {
+        border-bottom-color: #667eea;
+        border-right: 3px solid #667eea;
+    }
+    
+    .tab-content {
+        padding: 20px;
+    }
+}
+
