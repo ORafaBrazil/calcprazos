@@ -76,6 +76,108 @@ main {
     border-bottom-color: #667eea;
 }
 
+/* Abas externas (Manual e Suporte) */
+.external-tabs-container {
+    max-width: 900px;
+    margin: 20px auto 0;
+    padding: 0 20px;
+}
+
+.external-tabs {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    background: transparent;
+}
+
+.external-tab-button {
+    padding: 10px 20px;
+    background: #e8e8e8;
+    color: #555;
+    border: none;
+    border-radius: 5px 5px 0 0;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 600;
+    transition: all 0.3s;
+    min-width: 100px;
+}
+
+.external-tab-button:hover {
+    background: #d0d0d0;
+    color: #333;
+}
+
+.external-tab-button.active {
+    background: white;
+    color: #667eea;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+}
+
+.external-content-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px 30px;
+}
+
+.external-tab-content {
+    display: none;
+    background: white;
+    border-radius: 0 10px 10px 10px;
+    padding: 30px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+
+.external-tab-content.active {
+    display: block;
+}
+
+.external-tab-content h2 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+}
+
+.external-tab-content h3 {
+    color: #333;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    font-size: 1.4em;
+}
+
+.external-tab-content h4 {
+    color: #444;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+}
+
+.external-tab-content p {
+    color: #666;
+    margin-bottom: 20px;
+    line-height: 1.8;
+}
+
+.external-tab-content ul {
+    margin-left: 25px;
+    margin-bottom: 20px;
+    color: #666;
+}
+
+.external-tab-content li {
+    margin-bottom: 12px;
+    line-height: 1.8;
+}
+
+.external-tab-content a {
+    color: #667eea;
+    text-decoration: none;
+}
+
+.external-tab-content a:hover {
+    text-decoration: underline;
+}
+
 .tab-content {
     display: none;
     padding: 30px;
@@ -95,6 +197,40 @@ main {
     color: #666;
     margin-bottom: 25px;
     line-height: 1.6;
+}
+
+.tab-content ul {
+    margin-left: 20px;
+    margin-bottom: 20px;
+    color: #666;
+}
+
+.tab-content li {
+    margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+.tab-content h3 {
+    color: #333;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    font-size: 1.3em;
+}
+
+.tab-content h4 {
+    color: #444;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+.tab-content a {
+    color: #667eea;
+    text-decoration: none;
+}
+
+.tab-content a:hover {
+    text-decoration: underline;
 }
 
 .form-group {
@@ -250,6 +386,29 @@ footer {
     
     .tab-content {
         padding: 20px;
+    }
+    
+    .external-tabs-container {
+        padding: 0 10px;
+    }
+    
+    .external-tabs {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .external-tab-button {
+        flex: 1;
+        min-width: 120px;
+    }
+    
+    .external-content-container {
+        padding: 0 10px 20px;
+    }
+    
+    .external-tab-content {
+        padding: 20px;
+        border-radius: 0 0 10px 10px;
     }
 }
 

@@ -8,25 +8,25 @@
 </head>
 <body>
     <header>
-        <img src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fseeklogo.com%2Fvector-logo%2F140373%2Ftjgo&psig=AOvVaw0GP5S0Qcf7B0N1bs-bCM3c&ust=1764686070813000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCOjB7oXOnJEDFQAAAAAdAAAAABAE" class="logo">
+        <img src="Logo-TJGO.png" alt="Logo TJGO" class="logo">
         <h1>Calculadora de Prazos Processuais - TJGO</h1>
     </header>
 
     <main>
         <div class="container">
             <div class="tabs">
-                <button class="tab-button active" data-tab="purgação">1. Purgação da Mora</button>
-                <button class="tab-button" data-tab="contestação">2. Contestação</button>
-                <button class="tab-button" data-tab="sucessivos">3. Prazos Sucessivos</button>
-                <button class="tab-button" data-tab="trânsito">4. Trânsito em Julgado</button>
-                <button class="tab-button" data-tab="contagem">5. Contagem Livre</button>
+                <button class="tab-button active" data-tab="purgação">1. Purgação da mora</button>
+                <button class="tab-button" data-tab="sucessivos">2. Prazos Sucessivos</button>
+                <button class="tab-button" data-tab="trânsito">3. Trânsito em Julgado</button>
+                <button class="tab-button" data-tab="contagem">4. Contagem Livre</button>
+                <button class="tab-button" data-tab="edital">5. Edital</button>
                 <button class="tab-button" data-tab="suspensão">6. Suspensão</button>
                 <button class="tab-button" data-tab="feriados">7. Gerenciar Feriados</button>
             </div>
 
             <!-- Purgação da Mora -->
             <div class="tab-content active" id="purgação">
-                <h2>Purgação da Mora</h2>
+                <h2>1. Purgação da mora</h2>
                 <p>5 dias úteis a contar da juntada do mandado cumprido pelo oficial de justiça.</p>
                 <div class="form-group">
                     <label for="purgação-data">Data da juntada do mandado cumprido:</label>
@@ -36,24 +36,12 @@
                 <div id="purgação-resultado" class="resultado"></div>
             </div>
 
-            <!-- Contestação -->
-            <div class="tab-content" id="contestação">
-                <h2>Contestação</h2>
-                <p>15 dias úteis após o prazo da purgação da mora, contado sucessivamente.</p>
-                <div class="form-group">
-                    <label for="contestação-data">Data da juntada do mandado cumprido (purgação):</label>
-                    <input type="date" id="contestação-data" required>
-                </div>
-                <button onclick="calcularContestação()" class="btn-calculate">Calcular</button>
-                <div id="contestação-resultado" class="resultado"></div>
-            </div>
-
             <!-- Prazos Sucessivos -->
             <div class="tab-content" id="sucessivos">
-                <h2>Prazos Sucessivos</h2>
+                <h2>2. Prazos Sucessivos</h2>
                 <p>Calcule o primeiro prazo mais o segundo prazo em dias úteis (sucessivos).</p>
                 <div class="form-group">
-                    <label for="sucessivos-data">Data de entrada (Prazo 1):</label>
+                    <label for="sucessivos-data">Data de entrada (movimentação no Projudi):</label>
                     <input type="date" id="sucessivos-data" required>
                 </div>
                 <div class="form-group">
@@ -70,8 +58,8 @@
 
             <!-- Trânsito em Julgado -->
             <div class="tab-content" id="trânsito">
-                <h2>Trânsito em Julgado</h2>
-                <p>15 dias úteis. A contagem inicia 2 dias após a data informada.</p>
+                <h2>3. Trânsito em Julgado</h2>
+                <p>15 dias úteis. A contagem inicia 2 dias após a data informada (após publicação).</p>
                 <div class="form-group">
                     <label for="trânsito-data">Data da movimentação no Projudi:</label>
                     <input type="date" id="trânsito-data" required>
@@ -82,10 +70,10 @@
 
             <!-- Contagem Livre -->
             <div class="tab-content" id="contagem">
-                <h2>Contagem Livre (X dias - da publicação)</h2>
-                <p>Contagem inicia: 1 dia para disponibilização + 1 dia para publicação + 1 dia subsequente.</p>
+                <h2>4. Contagem Livre (regra dos 2 dias)</h2>
+                <p>O prazo começa a contar a partir do primeiro dia útil seguinte ao da publicação (2 dias úteis após a data de entrada).</p>
                 <div class="form-group">
-                    <label for="contagem-data">Data registrada no Projudi:</label>
+                    <label for="contagem-data">Data da movimentação no Projudi:</label>
                     <input type="date" id="contagem-data" required>
                 </div>
                 <div class="form-group">
@@ -96,12 +84,32 @@
                 <div id="contagem-resultado" class="resultado"></div>
             </div>
 
+            <!-- Edital -->
+            <div class="tab-content" id="edital">
+                <h2>5. Edital</h2>
+                <p>Calcule o prazo de edital publicado no DJE. A contagem inicia no dia útil seguinte à publicação.</p>
+                <div class="form-group">
+                    <label for="edital-data">Data da publicação no DJE:</label>
+                    <input type="date" id="edital-data" required>
+                </div>
+                <div class="form-group">
+                    <label for="edital-dias">Prazo do edital (dias corridos):</label>
+                    <input type="number" id="edital-dias" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="edital-contestacao">Prazo de contestação após edital (dias úteis):</label>
+                    <input type="number" id="edital-contestacao" min="1" value="15">
+                </div>
+                <button onclick="calcularEdital()" class="btn-calculate">Calcular</button>
+                <div id="edital-resultado" class="resultado"></div>
+            </div>
+
             <!-- Suspensão -->
             <div class="tab-content" id="suspensão">
-                <h2>Suspensão</h2>
-                <p>Calcule os dias úteis em contagem direta (pular dias).</p>
+                <h2>6. Suspensão (sem regra dos 2 dias)</h2>
+                <p>Calcule os dias úteis em contagem direta (pular dias). Contagem inicia no primeiro dia útil subsequente.</p>
                 <div class="form-group">
-                    <label for="suspensão-data">Data inicial:</label>
+                    <label for="suspensão-data">Data da movimentação no Projudi:</label>
                     <input type="date" id="suspensão-data" required>
                 </div>
                 <div class="form-group">
@@ -114,7 +122,7 @@
 
             <!-- Gerenciar Feriados -->
             <div class="tab-content" id="feriados">
-                <h2>Gerenciar Feriados e Pontos Facultativos</h2>
+                <h2>7. Gerenciar Feriados e Pontos Facultativos</h2>
                 <div class="feriados-container">
                     <div class="form-group">
                         <label for="novo-feriado">Adicionar feriado ou ponto facultativo:</label>
@@ -127,6 +135,97 @@
                     </div>
                 </div>
             </div>
+
+            </div>
+        </div>
+
+        <!-- Abas externas Manual e Suporte -->
+        <div class="external-tabs-container">
+            <div class="external-tabs">
+                <button class="external-tab-button" data-tab="manual">Manual</button>
+                <button class="external-tab-button" data-tab="suporte">Suporte</button>
+            </div>
+        </div>
+
+        <!-- Conteúdo das abas externas -->
+        <div class="external-content-container">
+            <!-- Manual do Usuário -->
+            <div class="external-tab-content" id="manual">
+                <h2>Manual do Usuário</h2>
+                <p>Esta calculadora de prazos processuais foi desenvolvida especificamente para otimizar a rotina de trabalho da <strong>UPJ Cível de Rio Verde</strong>, apoiando secretários, analistas, estagiários e escrivães – todos indispensáveis.</p>
+                <p>Embora o foco do nosso trabalho seja a qualidade, os números permitem aferir onde precisamos melhorar.</p>
+                <p>Nosso objetivo central é alcançar a excelência na atividade jurisdicional, o que exige eficiência, minimização de equívocos e eliminação de retrabalho. A precisão e a celeridade na contagem de prazos são fundamentais, contribuindo diretamente para a qualidade do serviço e para o bom desempenho nos indicadores de produtividade do TJGO.</p>
+                <p>O aplicativo preenche uma necessidade essencial, tornando a contagem de prazos mais rápida e precisa. Além de agilizar a rotina, ele serve como uma ferramenta de ensino eficaz para os novos membros da unidade.</p>
+                <p>Com uma interface simples, é possível simular os prazos mais comuns da nossa rotina, abrangendo:</p>
+                <ul>
+                    <li>Prazos baseados em publicações no DJE.</li>
+                    <li>Prazos sucessivos e de contagem livre.</li>
+                    <li>Contagem de suspensões em dias úteis e cálculo do decurso de prazo.</li>
+                </ul>
+
+                <h3>Contagem de Prazos</h3>
+                <p>A contagem de prazos processuais obedece a três critérios principais:</p>
+                <h4>1. Prazo por publicação no DJE (regra dos 2 dias)</h4>
+                <p>Começa a contar somente no <strong>terceiro dia útil</strong>. A lógica é:</p>
+                <ul>
+                    <li>Data do evento no PROJUDI;</li>
+                    <li>1 dia de disponibilização;</li>
+                    <li>1 dia para publicação no diário eletrônico;</li>
+                    <li>no terceiro dia útil começa a contagem dos prazos (salvo feriados, ponto facultativo, sábado e domingo).</li>
+                </ul>
+                <p><strong>Exemplo:</strong> atos cuja intimação é feita aos advogados das partes.</p>
+
+                <h4>2. Prazo por ato direto (sem regra dos 2 dias)</h4>
+                <p>Aplica-se a audiência, juntada de mandado, retorno do TJGO, etc. Aqui o prazo começa a contar a partir da ciência:</p>
+                <ul>
+                    <li>Compareceu na audiência (foi intimado pessoalmente);</li>
+                    <li>um dia útil depois inicia a contagem;</li>
+                    <li>exemplo: contestação em 15 dias após a audiência.</li>
+                </ul>
+
+                <h4>3. Contagem livre (X dias após o evento)</h4>
+                <p>Pode ser uma contagem em dias úteis ou dias corridos.</p>
+                <p><strong>Exemplo de edital:</strong></p>
+                <ul>
+                    <li>Disponibilização do edital no DJE: 10/03/2025 (segunda);</li>
+                    <li>início da contagem: 11/03/2025 (terça, dia útil seguinte);</li>
+                    <li>se o edital tiver 20 dias corridos, término em 30/03/2025;</li>
+                    <li>no dia 31/03/2025 (dia útil seguinte) começa o prazo da contestação (15 dias úteis).</li>
+                </ul>
+
+                <h3>Prazos sucessivos</h3>
+                <p>De forma resumida, exemplos de prazos sucessivos:</p>
+                <ul>
+                    <li>5 dias + 15 dias (ex.: impugnar execução);</li>
+                    <li>20 dias + 15 dias (edital + contestação);</li>
+                    <li>15 dias + 15 dias (cumprimento + impugnação).</li>
+                </ul>
+                <p><strong>Lógica:</strong></p>
+                <ul>
+                    <li>O primeiro prazo segue sua própria regra de início (DJE, audiência, juntada, edital etc.);</li>
+                    <li>o segundo prazo sempre começa no dia útil seguinte ao término do primeiro, <strong>sem</strong> aplicar novamente a regra dos 2 dias.</li>
+                </ul>
+
+                <h4>Exemplo prático (cumprimento de sentença)</h4>
+                <ul>
+                    <li><strong>1º prazo – Cumprimento espontâneo (15 dias úteis)</strong>: inicia no 3º dia útil após a publicação no DJE (intimação pelo advogado).</li>
+                    <li><strong>2º prazo – Impugnação ao cumprimento de sentença (15 dias úteis)</strong>: inicia no dia útil seguinte ao término do primeiro prazo, sem pular dois dias.</li>
+                </ul>
+                <p>Ou seja:</p>
+                <ul>
+                    <li>Prazo 1 (cumprimento): inicia no 3º dia útil e corre 15 dias úteis;</li>
+                    <li>Prazo 2 (impugnação): inicia no dia útil seguinte ao fim do Prazo 1.</li>
+                </ul>
+            </div>
+
+            <!-- Suporte -->
+            <div class="external-tab-content" id="suporte">
+                <h2>Suporte</h2>
+                <p>Graduando em Engenharia de Software pela Universidade Católica de Brasília, trago uma paixão de longa data pela tecnologia e seu poder de transformação social. Minha jornada, que acompanhou o desenvolvimento da internet no Brasil (IRC chats, conexões ADSL), culmina na aplicação prática desse conhecimento no serviço público.</p>
+                <p>Atualmente, trabalho na <strong>UPJ Cível – Rio Verde</strong>, impulsionando a produtividade através de soluções tecnológicas.</p>
+                <p><strong>Sugestões para a calculadora?</strong></p>
+                <p>Envie um e-mail para: <a href="mailto:radtuma@tjgo.jus.br">radtuma@tjgo.jus.br</a>.</p>
+            </div>
         </div>
     </main>
 
@@ -137,8 +236,6 @@
     <script src="script.js"></script>
 </body>
 </html>
-
-
 
 
 

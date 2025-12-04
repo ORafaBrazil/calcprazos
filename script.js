@@ -80,46 +80,77 @@ function adicionarDiasUteis(dataInicial, quantidadeDias) {
     return data;
 }
 
-// Função para contar dias úteis entre duas datas (para suspensão)
-function contarDiasUteis(dataInicial, quantidadeDias) {
-    let data = new Date(dataInicial);
+// Função para ajustar data de entrada para próximo dia útil se necessário
+function ajustarDataEntrada(data) {
+    let dataAjustada = new Date(data);
+    
+    // Se não for dia útil, encontrar o próximo dia útil
+    while (!isDiaUtil(dataAjustada)) {
+        dataAjustada.setDate(dataAjustada.getDate() + 1);
+    }
+    
+    return dataAjustada;
+}
+
+// Função para calcular prazo incluindo o dia inicial e o dia final
+// dataInicio é o primeiro dia útil após a publicação (já calculado)
+// quantidadeDias é o número de dias úteis a contar
+// Regra: Conta quantidadeDias dias úteis a partir de dataInicio (incluindo dataInicio)
+// O último dia (dia do vencimento) é incluído na contagem
+function calcularPrazoComExclusaoInclusao(dataInicio, quantidadeDias) {
+    // O dia inicial (dataInicio) é incluído na contagem
+    // Contamos quantidadeDias dias úteis a partir de dataInicio
+    let data = new Date(dataInicio);
     let diasContados = 0;
     
+    // Conta os dias úteis incluindo o dia inicial
     while (diasContados < quantidadeDias) {
-        data.setDate(data.getDate() + 1);
         if (isDiaUtil(data)) {
             diasContados++;
         }
+        // Se ainda não contou todos os dias, avança para o próximo
+        if (diasContados < quantidadeDias) {
+            data.setDate(data.getDate() + 1);
+        }
     }
     
+    // Retorna a data final (incluída na contagem)
     return data;
 }
 
-// Função para iniciar contagem 2 dias após a data (regra do processo civil)
-function iniciarContagem2DiasApos(dataInicial) {
-    let data = new Date(dataInicial);
+// Função para iniciar contagem após publicação
+// Calcula a data de publicação (2 dias úteis após a data de entrada)
+// Retorna o primeiro dia útil após a publicação (que será o início da contagem)
+function iniciarContagemAposPublicacao(dataEntrada) {
+    let data = new Date(dataEntrada);
     let diasPulados = 0;
     
+    // Calcula a data de publicação (2 dias úteis após a data de entrada)
     while (diasPulados < 2) {
         data.setDate(data.getDate() + 1);
         if (isDiaUtil(data)) {
             diasPulados++;
         }
     }
+    // Agora 'data' é a data de publicação
+    
+    // Retorna o primeiro dia útil após a publicação (início da contagem)
+    data.setDate(data.getDate() + 1);
+    while (!isDiaUtil(data)) {
+        data.setDate(data.getDate() + 1);
+    }
     
     return data;
 }
 
-// Função para iniciar contagem 3 dias após (disponibilização + publicação + subsequente)
-function iniciarContagem3DiasApos(dataInicial) {
+// Função para iniciar contagem 1 dia útil após (para suspensão)
+function iniciarContagem1DiaUtilApos(dataInicial) {
     let data = new Date(dataInicial);
-    let diasPulados = 0;
+    data.setDate(data.getDate() + 1);
     
-    while (diasPulados < 3) {
+    // Encontra o próximo dia útil
+    while (!isDiaUtil(data)) {
         data.setDate(data.getDate() + 1);
-        if (isDiaUtil(data)) {
-            diasPulados++;
-        }
     }
     
     return data;
@@ -181,20 +212,38 @@ function calcularSucessivos() {
         return;
     }
     
+    // 3.1: Ajustar data de entrada se for sábado, domingo, feriado ou ponto facultativo
     const dataInicial = new Date(dataInput + 'T00:00:00');
-    // Prazo 1: inicia 2 dias após, depois conta os dias úteis
-    const dataInicioPrazo1 = iniciarContagem2DiasApos(dataInicial);
-    const dataFimPrazo1 = adicionarDiasUteis(dataInicioPrazo1, prazo1);
-    // Prazo 2: sucessivo ao prazo 1
-    const dataFinal = adicionarDiasUteis(dataFimPrazo1, prazo2);
+    const dataEntrada = ajustarDataEntrada(dataInicial);
+    
+    // 3.4: Início do prazo - começa a contar a partir do primeiro dia útil seguinte ao da publicação (2 dias úteis após)
+    const dataInicioPrazo1 = iniciarContagemAposPublicacao(dataEntrada);
+    
+    // 3.2: Calcular prazo 1 com exclusão do dia inicial e inclusão do dia final
+    const dataFimPrazo1 = calcularPrazoComExclusaoInclusao(dataInicioPrazo1, prazo1);
+    
+    // 3.5: Prazo sucessivo - no primeiro dia útil seguinte ao término do prazo 1, inicia o prazo 2
+    // O prazo 2 começa a contar no dia subsequente ao prazo 1 (sem a regra dos 2 dias)
+    let dataInicioPrazo2 = new Date(dataFimPrazo1);
+    dataInicioPrazo2.setDate(dataInicioPrazo2.getDate() + 1);
+    while (!isDiaUtil(dataInicioPrazo2)) {
+        dataInicioPrazo2.setDate(dataInicioPrazo2.getDate() + 1);
+    }
+    
+    // Calcular prazo 2 - conta dias úteis a partir de dataInicioPrazo2 (incluindo o dia inicial)
+    const dataFimPrazo2 = calcularPrazoComExclusaoInclusao(dataInicioPrazo2, prazo2);
+    
+    const totalDiasUteis = prazo1 + prazo2;
     
     const resultado = document.getElementById('sucessivos-resultado');
     resultado.innerHTML = `
         <h3>Resultado do Cálculo:</h3>
-        <p><strong>Data de entrada:</strong> ${formatarDataBR(dataInicial)} (${getNomeDiaSemana(dataInicial)})</p>
+        <p><strong>Data de entrada:</strong> ${formatarDataBR(dataEntrada)} (${getNomeDiaSemana(dataEntrada)})</p>
         <p><strong>Início do Prazo 1:</strong> ${formatarDataBR(dataInicioPrazo1)} (${getNomeDiaSemana(dataInicioPrazo1)})</p>
-        <p><strong>Fim do Prazo 1 (${prazo1} dias úteis):</strong> ${formatarDataBR(dataFimPrazo1)} (${getNomeDiaSemana(dataFimPrazo1)})</p>
-        <p class="data-final"><strong>Prazo final (Prazo 1 + Prazo 2 = ${prazo1 + prazo2} dias úteis):</strong> ${formatarDataBR(dataFinal)} (${getNomeDiaSemana(dataFinal)})</p>
+        <p><strong>Fim do prazo 1 (${prazo1} dias úteis):</strong> ${formatarDataBR(dataFimPrazo1)} (${getNomeDiaSemana(dataFimPrazo1)})</p>
+        <p><strong>Início do Prazo 2:</strong> ${formatarDataBR(dataInicioPrazo2)} (${getNomeDiaSemana(dataInicioPrazo2)})</p>
+        <p><strong>Fim do prazo 2 (${prazo2} dias úteis):</strong> ${formatarDataBR(dataFimPrazo2)} (${getNomeDiaSemana(dataFimPrazo2)})</p>
+        <p class="data-final"><strong>Prazo Final: Prazo 1 + Prazo 2 = ${totalDiasUteis} dias úteis:</strong> ${formatarDataBR(dataFimPrazo2)} (${getNomeDiaSemana(dataFimPrazo2)})</p>
     `;
     resultado.classList.add('show');
 }
@@ -207,14 +256,20 @@ function calcularTrânsito() {
         return;
     }
     
+    // 4.1: Ajustar data de entrada se for sábado, domingo, feriado ou ponto facultativo
     const dataInicial = new Date(dataInput + 'T00:00:00');
-    const dataInicioContagem = iniciarContagem2DiasApos(dataInicial);
-    const dataFinal = adicionarDiasUteis(dataInicioContagem, 15);
+    const dataEntrada = ajustarDataEntrada(dataInicial);
+    
+    // 4.3: Início do prazo - começa a contar a partir do primeiro dia útil seguinte ao da publicação (2 dias úteis após)
+    const dataInicioContagem = iniciarContagemAposPublicacao(dataEntrada);
+    
+    // 4.2: Calcular prazo com exclusão do dia inicial e inclusão do dia final
+    const dataFinal = calcularPrazoComExclusaoInclusao(dataInicioContagem, 15);
     
     const resultado = document.getElementById('trânsito-resultado');
     resultado.innerHTML = `
         <h3>Resultado do Cálculo:</h3>
-        <p><strong>Data da movimentação:</strong> ${formatarDataBR(dataInicial)} (${getNomeDiaSemana(dataInicial)})</p>
+        <p><strong>Data da movimentação:</strong> ${formatarDataBR(dataEntrada)} (${getNomeDiaSemana(dataEntrada)})</p>
         <p><strong>Início da contagem:</strong> ${formatarDataBR(dataInicioContagem)} (${getNomeDiaSemana(dataInicioContagem)})</p>
         <p class="data-final"><strong>Trânsito em julgado (15 dias úteis):</strong> ${formatarDataBR(dataFinal)} (${getNomeDiaSemana(dataFinal)})</p>
     `;
@@ -231,22 +286,82 @@ function calcularContagem() {
         return;
     }
     
+    // 4.1: Ajustar data de entrada se for sábado, domingo, feriado ou ponto facultativo
     const dataInicial = new Date(dataInput + 'T00:00:00');
-    // 1 dia disponibilização + 1 dia publicação + 1 dia subsequente = 3 dias úteis
-    const dataInicioContagem = iniciarContagem3DiasApos(dataInicial);
-    const dataFinal = adicionarDiasUteis(dataInicioContagem, dias);
+    const dataEntrada = ajustarDataEntrada(dataInicial);
+    
+    // 4.3: Início do prazo - começa a contar a partir do primeiro dia útil seguinte ao da publicação (2 dias úteis após)
+    const dataInicioContagem = iniciarContagemAposPublicacao(dataEntrada);
+    
+    // 4.2: Calcular prazo com exclusão do dia inicial e inclusão do dia final
+    const dataFinal = calcularPrazoComExclusaoInclusao(dataInicioContagem, dias);
     
     const resultado = document.getElementById('contagem-resultado');
     resultado.innerHTML = `
         <h3>Resultado do Cálculo:</h3>
-        <p><strong>Data registrada no Projudi:</strong> ${formatarDataBR(dataInicial)} (${getNomeDiaSemana(dataInicial)})</p>
-        <p><strong>Início da contagem (após disponibilização + publicação):</strong> ${formatarDataBR(dataInicioContagem)} (${getNomeDiaSemana(dataInicioContagem)})</p>
+        <p><strong>Data registrada no Projudi:</strong> ${formatarDataBR(dataEntrada)} (${getNomeDiaSemana(dataEntrada)})</p>
+        <p><strong>Início da contagem (após publicação):</strong> ${formatarDataBR(dataInicioContagem)} (${getNomeDiaSemana(dataInicioContagem)})</p>
         <p class="data-final"><strong>Prazo final (${dias} dias úteis):</strong> ${formatarDataBR(dataFinal)} (${getNomeDiaSemana(dataFinal)})</p>
     `;
     resultado.classList.add('show');
 }
 
-// 6. Suspensão
+// 6. Edital
+function calcularEdital() {
+    const dataInput = document.getElementById('edital-data').value;
+    const diasCorridos = parseInt(document.getElementById('edital-dias').value);
+    const diasContestacao = parseInt(document.getElementById('edital-contestacao').value) || 15;
+    
+    if (!dataInput || !diasCorridos) {
+        alert('Por favor, preencha todos os campos obrigatórios.');
+        return;
+    }
+    
+    // Ajustar data de publicação se for sábado, domingo, feriado ou ponto facultativo
+    const dataInicial = new Date(dataInput + 'T00:00:00');
+    const dataPublicacao = ajustarDataEntrada(dataInicial);
+    
+    // Início da contagem: dia útil seguinte à publicação
+    let dataInicioContagem = new Date(dataPublicacao);
+    dataInicioContagem.setDate(dataInicioContagem.getDate() + 1);
+    while (!isDiaUtil(dataInicioContagem)) {
+        dataInicioContagem.setDate(dataInicioContagem.getDate() + 1);
+    }
+    
+    // Calcular término do edital (dias corridos)
+    let dataTerminoEdital = new Date(dataInicioContagem);
+    let diasContados = 0;
+    
+    while (diasContados < diasCorridos) {
+        diasContados++;
+        if (diasContados < diasCorridos) {
+            dataTerminoEdital.setDate(dataTerminoEdital.getDate() + 1);
+        }
+    }
+    
+    // Prazo de contestação inicia no dia útil seguinte ao término do edital
+    let dataInicioContestacao = new Date(dataTerminoEdital);
+    dataInicioContestacao.setDate(dataInicioContestacao.getDate() + 1);
+    while (!isDiaUtil(dataInicioContestacao)) {
+        dataInicioContestacao.setDate(dataInicioContestacao.getDate() + 1);
+    }
+    
+    // Calcular prazo de contestação (dias úteis)
+    const dataFimContestacao = calcularPrazoComExclusaoInclusao(dataInicioContestacao, diasContestacao);
+    
+    const resultado = document.getElementById('edital-resultado');
+    resultado.innerHTML = `
+        <h3>Resultado do Cálculo:</h3>
+        <p><strong>Data da publicação no DJE:</strong> ${formatarDataBR(dataPublicacao)} (${getNomeDiaSemana(dataPublicacao)})</p>
+        <p><strong>Início da contagem:</strong> ${formatarDataBR(dataInicioContagem)} (${getNomeDiaSemana(dataInicioContagem)})</p>
+        <p><strong>Término do edital (${diasCorridos} dias corridos):</strong> ${formatarDataBR(dataTerminoEdital)} (${getNomeDiaSemana(dataTerminoEdital)})</p>
+        <p><strong>Início do prazo de contestação:</strong> ${formatarDataBR(dataInicioContestacao)} (${getNomeDiaSemana(dataInicioContestacao)})</p>
+        <p class="data-final"><strong>Fim do prazo de contestação (${diasContestacao} dias úteis):</strong> ${formatarDataBR(dataFimContestacao)} (${getNomeDiaSemana(dataFimContestacao)})</p>
+    `;
+    resultado.classList.add('show');
+}
+
+// 7. Suspensão/Decurso de Prazo
 function calcularSuspensão() {
     const dataInput = document.getElementById('suspensão-data').value;
     const dias = parseInt(document.getElementById('suspensão-dias').value);
@@ -256,19 +371,37 @@ function calcularSuspensão() {
         return;
     }
     
+    // Ajustar data de entrada se for sábado, domingo, feriado ou ponto facultativo
     const dataInicial = new Date(dataInput + 'T00:00:00');
-    const dataFinal = contarDiasUteis(dataInicial, dias);
+    const dataEntrada = ajustarDataEntrada(dataInicial);
+    
+    // Contagem inicia no primeiro dia útil subsequente ao da movimentação no projudi
+    const dataInicioSuspensão = iniciarContagem1DiaUtilApos(dataEntrada);
+    
+    // Contar dias úteis em contagem direta (pular dias)
+    let dataFinal = new Date(dataInicioSuspensão);
+    let diasContados = 0;
+    
+    while (diasContados < dias) {
+        if (isDiaUtil(dataFinal)) {
+            diasContados++;
+        }
+        if (diasContados < dias) {
+            dataFinal.setDate(dataFinal.getDate() + 1);
+        }
+    }
     
     const resultado = document.getElementById('suspensão-resultado');
     resultado.innerHTML = `
         <h3>Resultado do Cálculo:</h3>
-        <p><strong>Data inicial:</strong> ${formatarDataBR(dataInicial)} (${getNomeDiaSemana(dataInicial)})</p>
+        <p><strong>Data da movimentação:</strong> ${formatarDataBR(dataEntrada)} (${getNomeDiaSemana(dataEntrada)})</p>
+        <p><strong>Início da suspensão:</strong> ${formatarDataBR(dataInicioSuspensão)} (${getNomeDiaSemana(dataInicioSuspensão)})</p>
         <p class="data-final"><strong>Data final após suspensão de ${dias} dias úteis:</strong> ${formatarDataBR(dataFinal)} (${getNomeDiaSemana(dataFinal)})</p>
     `;
     resultado.classList.add('show');
 }
 
-// 7. Gerenciar Feriados
+// 8. Gerenciar Feriados
 function adicionarFeriado() {
     const dataInput = document.getElementById('novo-feriado').value;
     if (!dataInput) {
@@ -315,6 +448,7 @@ function atualizarListaFeriados() {
 
 // Sistema de abas
 document.addEventListener('DOMContentLoaded', function() {
+    // Abas principais (dentro do container)
     const tabButtons = document.querySelectorAll('.tab-button');
     const tabContents = document.querySelectorAll('.tab-content');
     
@@ -325,6 +459,24 @@ document.addEventListener('DOMContentLoaded', function() {
             // Remove active de todos
             tabButtons.forEach(btn => btn.classList.remove('active'));
             tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Adiciona active no selecionado
+            button.classList.add('active');
+            document.getElementById(targetTab).classList.add('active');
+        });
+    });
+    
+    // Abas externas (Manual e Suporte)
+    const externalTabButtons = document.querySelectorAll('.external-tab-button');
+    const externalTabContents = document.querySelectorAll('.external-tab-content');
+    
+    externalTabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const targetTab = button.getAttribute('data-tab');
+            
+            // Remove active de todos
+            externalTabButtons.forEach(btn => btn.classList.remove('active'));
+            externalTabContents.forEach(content => content.classList.remove('active'));
             
             // Adiciona active no selecionado
             button.classList.add('active');
