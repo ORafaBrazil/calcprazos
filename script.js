@@ -156,7 +156,7 @@ function iniciarContagem1DiaUtilApos(dataInicial) {
     return data;
 }
 
-// 1. Purgação da Mora
+// 1. Purgação da Mora / Contestação
 function calcularPurgação() {
     const dataInput = document.getElementById('purgação-data').value;
     if (!dataInput) {
@@ -165,14 +165,18 @@ function calcularPurgação() {
     }
     
     const dataInicial = new Date(dataInput + 'T00:00:00');
-    // Purgação começa imediatamente (sem os 2 dias)
-    const dataFinal = adicionarDiasUteis(dataInicial, 5);
+    // Purgação: 5 dias úteis a contar da juntada (sem regra dos 2 dias)
+    const dataFimPurgação = adicionarDiasUteis(dataInicial, 5);
+    
+    // Contestação: 15 dias úteis após o prazo da purgação, contado sucessivamente
+    const dataFimContestação = adicionarDiasUteis(dataFimPurgação, 15);
     
     const resultado = document.getElementById('purgação-resultado');
     resultado.innerHTML = `
         <h3>Resultado do Cálculo:</h3>
-        <p><strong>Data da juntada:</strong> ${formatarDataBR(dataInicial)} (${getNomeDiaSemana(dataInicial)})</p>
-        <p class="data-final"><strong>Prazo final (5 dias úteis):</strong> ${formatarDataBR(dataFinal)} (${getNomeDiaSemana(dataFinal)})</p>
+        <p><strong>Data da juntada do mandado cumprido:</strong> ${formatarDataBR(dataInicial)} (${getNomeDiaSemana(dataInicial)})</p>
+        <p><strong>Fim da purgação da mora (5 dias úteis):</strong> ${formatarDataBR(dataFimPurgação)} (${getNomeDiaSemana(dataFimPurgação)})</p>
+        <p class="data-final"><strong>Fim do prazo de contestação (15 dias úteis após a purgação):</strong> ${formatarDataBR(dataFimContestação)} (${getNomeDiaSemana(dataFimContestação)})</p>
     `;
     resultado.classList.add('show');
 }
