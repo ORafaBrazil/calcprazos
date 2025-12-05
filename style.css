@@ -245,6 +245,7 @@ main {
 }
 
 .form-group input[type="date"],
+.form-group input[type="text"],
 .form-group input[type="number"] {
     width: 100%;
     padding: 12px;
@@ -255,9 +256,21 @@ main {
 }
 
 .form-group input[type="date"]:focus,
+.form-group input[type="text"]:focus,
 .form-group input[type="number"]:focus {
     outline: none;
     border-color: #667eea;
+}
+
+.form-group input[type="text"][placeholder*="dd/mm"] {
+    text-align: left;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 1px;
+}
+
+.form-group input[type="text"][placeholder*="dd/mm"]::placeholder {
+    color: #999;
+    font-style: italic;
 }
 
 .btn-calculate,

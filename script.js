@@ -59,6 +59,66 @@ function formatarDataBR(data) {
     return `${dia}/${mes}/${ano}`;
 }
 
+// Função para converter data do formato brasileiro (DD/MM/YYYY) para Date object
+function parseDataBR(dataStr) {
+    if (!dataStr) return null;
+    
+    // Remove espaços e caracteres especiais, mantendo apenas números e barras
+    const limpa = dataStr.trim().replace(/[^\d\/]/g, '');
+    
+    // Verifica formato DD/MM/YYYY ou DD/MM/YY
+    const partes = limpa.split('/');
+    if (partes.length !== 3) {
+        return null;
+    }
+    
+    let dia = parseInt(partes[0], 10);
+    let mes = parseInt(partes[1], 10) - 1; // Mês é 0-indexed no JavaScript
+    let ano = parseInt(partes[2], 10);
+    
+    // Se o ano tiver 2 dígitos, assume 20XX para anos >= 24, 20XX para anos < 24 (assumindo anos recentes)
+    if (ano < 100) {
+        ano = 2000 + ano;
+    }
+    
+    // Validação básica
+    if (isNaN(dia) || isNaN(mes) || isNaN(ano)) {
+        return null;
+    }
+    
+    if (dia < 1 || dia > 31 || mes < 0 || mes > 11) {
+        return null;
+    }
+    
+    const data = new Date(ano, mes, dia);
+    
+    // Verifica se a data é válida (ex: não permite 31/02)
+    if (data.getDate() !== dia || data.getMonth() !== mes || data.getFullYear() !== ano) {
+        return null;
+    }
+    
+    return data;
+}
+
+// Função para aplicar máscara de data brasileira (DD/MM/YYYY)
+function aplicarMascaraData(input) {
+    let valor = input.value.replace(/\D/g, ''); // Remove tudo que não é dígito
+    
+    if (valor.length > 8) {
+        valor = valor.substring(0, 8);
+    }
+    
+    // Formata como DD/MM/YYYY
+    if (valor.length > 2) {
+        valor = valor.substring(0, 2) + '/' + valor.substring(2);
+    }
+    if (valor.length > 5) {
+        valor = valor.substring(0, 5) + '/' + valor.substring(5);
+    }
+    
+    input.value = valor;
+}
+
 // Função para obter o nome do dia da semana
 function getNomeDiaSemana(data) {
     const dias = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
@@ -164,7 +224,11 @@ function calcularPurgação() {
         return;
     }
     
-    const dataInicial = new Date(dataInput + 'T00:00:00');
+    const dataInicial = parseDataBR(dataInput);
+    if (!dataInicial) {
+        alert('Por favor, informe uma data válida no formato dd/mm/aaaa.');
+        return;
+    }
     
     // Purgação da mora: 5 dias úteis a contar da juntada do mandado cumprido
     // A contagem começa no próximo dia útil após a data da juntada
@@ -224,7 +288,11 @@ function calcularSucessivos() {
     }
     
     // 3.1: Ajustar data de entrada se for sábado, domingo, feriado ou ponto facultativo
-    const dataInicial = new Date(dataInput + 'T00:00:00');
+    const dataInicial = parseDataBR(dataInput);
+    if (!dataInicial) {
+        alert('Por favor, informe uma data válida no formato dd/mm/aaaa.');
+        return;
+    }
     const dataEntrada = ajustarDataEntrada(dataInicial);
     
     // 3.4: Início do prazo - começa a contar a partir do primeiro dia útil seguinte ao da publicação (2 dias úteis após)
@@ -268,7 +336,11 @@ function calcularTrânsito() {
     }
     
     // 4.1: Ajustar data de entrada se for sábado, domingo, feriado ou ponto facultativo
-    const dataInicial = new Date(dataInput + 'T00:00:00');
+    const dataInicial = parseDataBR(dataInput);
+    if (!dataInicial) {
+        alert('Por favor, informe uma data válida no formato dd/mm/aaaa.');
+        return;
+    }
     const dataEntrada = ajustarDataEntrada(dataInicial);
     
     // 4.3: Início do prazo - começa a contar a partir do primeiro dia útil seguinte ao da publicação (2 dias úteis após)
@@ -298,7 +370,11 @@ function calcularContagem() {
     }
     
     // 4.1: Ajustar data de entrada se for sábado, domingo, feriado ou ponto facultativo
-    const dataInicial = new Date(dataInput + 'T00:00:00');
+    const dataInicial = parseDataBR(dataInput);
+    if (!dataInicial) {
+        alert('Por favor, informe uma data válida no formato dd/mm/aaaa.');
+        return;
+    }
     const dataEntrada = ajustarDataEntrada(dataInicial);
     
     // 4.3: Início do prazo - começa a contar a partir do primeiro dia útil seguinte ao da publicação (2 dias úteis após)
@@ -329,7 +405,11 @@ function calcularEdital() {
     }
     
     // Ajustar data de publicação se for sábado, domingo, feriado ou ponto facultativo
-    const dataInicial = new Date(dataInput + 'T00:00:00');
+    const dataInicial = parseDataBR(dataInput);
+    if (!dataInicial) {
+        alert('Por favor, informe uma data válida no formato dd/mm/aaaa.');
+        return;
+    }
     const dataPublicacao = ajustarDataEntrada(dataInicial);
     
     // Início da contagem: dia útil seguinte à publicação
@@ -383,7 +463,11 @@ function calcularSuspensão() {
     }
     
     // Ajustar data de entrada se for sábado, domingo, feriado ou ponto facultativo
-    const dataInicial = new Date(dataInput + 'T00:00:00');
+    const dataInicial = parseDataBR(dataInput);
+    if (!dataInicial) {
+        alert('Por favor, informe uma data válida no formato dd/mm/aaaa.');
+        return;
+    }
     const dataEntrada = ajustarDataEntrada(dataInicial);
     
     // Contagem inicia no primeiro dia útil subsequente ao da movimentação no projudi
@@ -416,13 +500,20 @@ function calcularSuspensão() {
 function adicionarFeriado() {
     const dataInput = document.getElementById('novo-feriado').value;
     if (!dataInput) {
-        alert('Por favor, selecione uma data.');
+        alert('Por favor, informe uma data.');
         return;
     }
     
-    if (!feriadosSet.has(dataInput)) {
-        feriados.push(dataInput);
-        feriadosSet.add(dataInput);
+    const data = parseDataBR(dataInput);
+    if (!data) {
+        alert('Por favor, informe uma data válida no formato dd/mm/aaaa.');
+        return;
+    }
+    
+    const dataISO = formatarDataISO(data);
+    if (!feriadosSet.has(dataISO)) {
+        feriados.push(dataISO);
+        feriadosSet.add(dataISO);
         atualizarListaFeriados();
         document.getElementById('novo-feriado').value = '';
     } else {
@@ -457,7 +548,7 @@ function atualizarListaFeriados() {
     });
 }
 
-// Sistema de abas
+// Sistema de abas e máscaras de data
 document.addEventListener('DOMContentLoaded', function() {
     // Abas principais (dentro do container)
     const tabButtons = document.querySelectorAll('.tab-button');
@@ -492,6 +583,23 @@ document.addEventListener('DOMContentLoaded', function() {
             // Adiciona active no selecionado
             button.classList.add('active');
             document.getElementById(targetTab).classList.add('active');
+        });
+    });
+    
+    // Aplicar máscara de data em todos os inputs de data
+    const inputsData = document.querySelectorAll('input[type="text"][placeholder*="dd/mm"]');
+    inputsData.forEach(input => {
+        input.addEventListener('input', function() {
+            aplicarMascaraData(this);
+        });
+        
+        input.addEventListener('blur', function() {
+            // Valida ao sair do campo
+            const valor = this.value.trim();
+            if (valor && !parseDataBR(valor)) {
+                alert('Por favor, informe uma data válida no formato dd/mm/aaaa.');
+                this.focus();
+            }
         });
     });
     

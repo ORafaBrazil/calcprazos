@@ -29,8 +29,8 @@
                 <h2>1. Purgação da mora / Contestação</h2>
                 <p>Purgação da mora: 5 dias úteis a contar da juntada do mandado cumprido pelo oficial de justiça. Contestação: 15 dias úteis após o prazo da purgação da mora, contado sucessivamente.</p>
                 <div class="form-group">
-                    <label for="purgação-data">Data da juntada do mandado cumprido:</label>
-                    <input type="date" id="purgação-data" required>
+                    <label for="purgação-data">Data da juntada do mandado cumprido (dd/mm/aaaa):</label>
+                    <input type="text" id="purgação-data" placeholder="dd/mm/aaaa" maxlength="10" required>
                 </div>
                 <button onclick="calcularPurgação()" class="btn-calculate">Calcular</button>
                 <div id="purgação-resultado" class="resultado"></div>
@@ -41,8 +41,8 @@
                 <h2>2. Prazos Sucessivos</h2>
                 <p>Calcule o primeiro prazo mais o segundo prazo em dias úteis (sucessivos).</p>
                 <div class="form-group">
-                    <label for="sucessivos-data">Data de entrada (movimentação no Projudi):</label>
-                    <input type="date" id="sucessivos-data" required>
+                    <label for="sucessivos-data">Data de entrada (movimentação no Projudi) (dd/mm/aaaa):</label>
+                    <input type="text" id="sucessivos-data" placeholder="dd/mm/aaaa" maxlength="10" required>
                 </div>
                 <div class="form-group">
                     <label for="sucessivos-prazo1">Prazo 1 (em dias):</label>
@@ -61,8 +61,8 @@
                 <h2>3. Trânsito em Julgado</h2>
                 <p>15 dias úteis. A contagem inicia 2 dias após a data informada (após publicação).</p>
                 <div class="form-group">
-                    <label for="trânsito-data">Data da movimentação no Projudi:</label>
-                    <input type="date" id="trânsito-data" required>
+                    <label for="trânsito-data">Data da movimentação no Projudi (dd/mm/aaaa):</label>
+                    <input type="text" id="trânsito-data" placeholder="dd/mm/aaaa" maxlength="10" required>
                 </div>
                 <button onclick="calcularTrânsito()" class="btn-calculate">Calcular</button>
                 <div id="trânsito-resultado" class="resultado"></div>
@@ -73,8 +73,8 @@
                 <h2>4. Contagem Livre (regra dos 2 dias)</h2>
                 <p>O prazo começa a contar a partir do primeiro dia útil seguinte ao da publicação (2 dias úteis após a data de entrada).</p>
                 <div class="form-group">
-                    <label for="contagem-data">Data da movimentação no Projudi:</label>
-                    <input type="date" id="contagem-data" required>
+                    <label for="contagem-data">Data da movimentação no Projudi (dd/mm/aaaa):</label>
+                    <input type="text" id="contagem-data" placeholder="dd/mm/aaaa" maxlength="10" required>
                 </div>
                 <div class="form-group">
                     <label for="contagem-dias">Número de dias:</label>
@@ -89,8 +89,8 @@
                 <h2>5. Edital</h2>
                 <p>Calcule o prazo de edital publicado no DJE. A contagem inicia no dia útil seguinte à publicação.</p>
                 <div class="form-group">
-                    <label for="edital-data">Data da publicação no DJE:</label>
-                    <input type="date" id="edital-data" required>
+                    <label for="edital-data">Data da publicação no DJE (dd/mm/aaaa):</label>
+                    <input type="text" id="edital-data" placeholder="dd/mm/aaaa" maxlength="10" required>
                 </div>
                 <div class="form-group">
                     <label for="edital-dias">Prazo do edital (dias corridos):</label>
@@ -109,8 +109,8 @@
                 <h2>6. Suspensão (sem regra dos 2 dias)</h2>
                 <p>Calcule os dias úteis em contagem direta (pular dias). Contagem inicia no primeiro dia útil subsequente.</p>
                 <div class="form-group">
-                    <label for="suspensão-data">Data da movimentação no Projudi:</label>
-                    <input type="date" id="suspensão-data" required>
+                    <label for="suspensão-data">Data da movimentação no Projudi (dd/mm/aaaa):</label>
+                    <input type="text" id="suspensão-data" placeholder="dd/mm/aaaa" maxlength="10" required>
                 </div>
                 <div class="form-group">
                     <label for="suspensão-dias">Quantos dias suspender:</label>
@@ -125,8 +125,8 @@
                 <h2>7. Gerenciar Feriados e Pontos Facultativos</h2>
                 <div class="feriados-container">
                     <div class="form-group">
-                        <label for="novo-feriado">Adicionar feriado ou ponto facultativo:</label>
-                        <input type="date" id="novo-feriado">
+                        <label for="novo-feriado">Adicionar feriado ou ponto facultativo (dd/mm/aaaa):</label>
+                        <input type="text" id="novo-feriado" placeholder="dd/mm/aaaa" maxlength="10">
                         <button onclick="adicionarFeriado()" class="btn-add">Adicionar</button>
                     </div>
                     <div class="feriados-list">
