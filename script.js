@@ -248,34 +248,49 @@ function iniciarContagem1DiaUtilApos(dataInicial) {
 function calcularPurgação() {
     const dataInput = document.getElementById('purgação-data').value;
     if (!dataInput) {
-        alert('Por favor, informe a data da juntada do mandado cumprido.');
+        alert('Por favor, informe a data do cumprimento da liminar.');
         return;
     }
     
-    const dataInicial = parseDataBR(dataInput);
+    // Aceita input type="date" (YYYY-MM-DD) e também texto no formato dd/mm/aaaa
+    let dataInicial = null;
+    if (dataInput.includes('-')) {
+        const [ano, mes, dia] = dataInput.split('-').map(Number);
+        dataInicial = new Date(ano, mes - 1, dia);
+        if (isNaN(dataInicial.getTime())) {
+            dataInicial = null;
+        }
+    } else {
+        dataInicial = parseDataBR(dataInput);
+    }
+
     if (!dataInicial) {
-        alert('Por favor, informe uma data válida no formato dd/mm/aaaa.');
+        alert('Por favor, informe uma data válida.');
         return;
     }
     
-    // Purgação da mora: 5 dias úteis a contar da juntada do mandado cumprido
-    // A contagem começa no próximo dia útil após a data da juntada
-    // Se a data informada for sábado, domingo, feriado ou ponto facultativo, ajusta para o próximo dia útil
-    const dataEntrada = ajustarDataEntrada(dataInicial);
-    
-    // Conta 5 dias úteis a partir do dia seguinte à data de entrada
-    const dataFimPurgação = adicionarDiasUteis(dataEntrada, 5);
+    // Purgação da mora: 5 dias corridos a contar do cumprimento da liminar
+    // Inclui sábado, domingo e feriados (não ajusta para dia útil)
+    const dataCumprimentoLiminar = new Date(dataInicial);
+    const dataFimPurgação = new Date(dataCumprimentoLiminar);
+    dataFimPurgação.setDate(dataFimPurgação.getDate() + 5);
     
     // Contestação: 15 dias úteis após o prazo da purgação da mora, contado sucessivamente
     // O prazo de contestação começa no dia útil seguinte ao término da purgação
-    const dataFimContestação = adicionarDiasUteis(dataFimPurgação, 15);
+    let dataInicioContestação = new Date(dataFimPurgação);
+    dataInicioContestação.setDate(dataInicioContestação.getDate() + 1);
+    while (!isDiaUtil(dataInicioContestação)) {
+        dataInicioContestação.setDate(dataInicioContestação.getDate() + 1);
+    }
+    const dataFimContestação = calcularPrazoComExclusaoInclusao(dataInicioContestação, 15);
     
     const resultado = document.getElementById('purgação-resultado');
     resultado.innerHTML = `
         <h3>Resultado do Cálculo:</h3>
-        <p><strong>Data da juntada do mandado cumprido:</strong> ${formatarDataBR(dataEntrada)} (${getNomeDiaSemana(dataEntrada)})</p>
-        <p><strong>Fim da purgação da mora (5 dias úteis):</strong> ${formatarDataBR(dataFimPurgação)} (${getNomeDiaSemana(dataFimPurgação)})</p>
-        <p class="data-final"><strong>Fim do prazo de contestação (15 dias úteis após a purgação):</strong> ${formatarDataBR(dataFimContestação)} (${getNomeDiaSemana(dataFimContestação)})</p>
+        <p><strong>Data do cumprimento da liminar:</strong> ${formatarDataBR(dataCumprimentoLiminar)} (${getNomeDiaSemana(dataCumprimentoLiminar)})</p>
+        <p><strong>Fim da purgação da mora (5 dias corridos):</strong> ${formatarDataBR(dataFimPurgação)} (${getNomeDiaSemana(dataFimPurgação)})</p>
+        <p><strong>Início da contestação (1º dia útil após a purgação):</strong> ${formatarDataBR(dataInicioContestação)} (${getNomeDiaSemana(dataInicioContestação)})</p>
+        <p class="data-final"><strong>Fim do prazo de contestação (15 dias úteis sucessivos):</strong> ${formatarDataBR(dataFimContestação)} (${getNomeDiaSemana(dataFimContestação)})</p>
     `;
     resultado.classList.add('show');
 }

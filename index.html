@@ -27,10 +27,10 @@
             <!-- Purgação da Mora -->
             <div class="tab-content active" id="purgação">
                 <h2>1. Purgação da mora / Contestação</h2>
-                <p>Purgação da mora: 5 dias úteis a contar da juntada do mandado cumprido pelo oficial de justiça. Contestação: 15 dias úteis após o prazo da purgação da mora, contado sucessivamente.</p>
+                <p>Purgação da mora (em dias úteis): 5 dias corridos a contar do cumprimento da liminar pelo Of. de Justiça, incluindo sábado, domingo e feriados. Contestação: 15 dias após o prazo da purgação da mora, contado sucessivamente, em dias úteis.</p>
                 <div class="form-group">
-                    <label for="purgação-data">Data da juntada do mandado cumprido (dd/mm/aaaa):</label>
-                    <input type="text" id="purgação-data" placeholder="dd/mm/aaaa" maxlength="10" required>
+                    <label for="purgação-data">Data do cumprimento da liminar:</label>
+                    <input type="date" id="purgação-data" required>
                 </div>
                 <button onclick="calcularPurgação()" class="btn-calculate">Calcular</button>
                 <div id="purgação-resultado" class="resultado"></div>
@@ -93,7 +93,7 @@
                     <input type="text" id="edital-data" placeholder="dd/mm/aaaa" maxlength="10" required>
                 </div>
                 <div class="form-group">
-                    <label for="edital-dias">Prazo do edital (dias úteis):</label>
+                    <label for="edital-dias">Prazo do edital (dias corridos):</label>
                     <input type="number" id="edital-dias" min="1" required>
                 </div>
                 <div class="form-group">
